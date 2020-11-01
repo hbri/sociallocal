@@ -1,4 +1,19 @@
-html {
-  margin: 15px;
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 3fr;
   font-family: Arial, Helvetica, sans-serif;
+  color: rgb(31, 31, 88);
+}
+
+.main {
+  grid-area: 1 / 1 / span 1 / span 2;
+}
+
+.chat {
+  grid-area: 2 / 1 / span 1 / span 1;
+}
+
+.info {
+  grid-area: 2 / 2 / span 1 / span 1;
 }
