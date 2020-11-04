@@ -5,9 +5,11 @@ const Group = require('../models/group.js');
 require('../index.js');
 
 module.exports.getPosts = async function(eventID) {
-  Event.findOne({_id: eventID})
-    .populate('posts')
-    .then((allposts) => {
-      console.log(allposts)
-    })
+  const allPosts = await Event.findOne({_id: eventID}).populate('posts')
+  return allPosts;
+}
+
+module.exports.getEvent = async function(eventID) {
+  const curEvent = await Event.findOne({_id: eventID})
+  return curEvent;
 }

@@ -8,21 +8,40 @@ import Info from './Info.jsx';
 
 
 const App = () => {
-  const [event, updateEvent] = useState({});
-  const [posts, updatePosts] = useState([]);
+  const [ event, setEvent ] = useState({});
+  const [ loading, setLoading ] = useState(true);
 
+  const eventid = location.pathname.split('/')[2];
 
+  const fetchEvent = async function() {
+    try {
+      const response = await axios.get(`/api/getevent/${eventid}`)
+      return response.data;
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
-  return (
+  useEffect(() => {
+    fetchEvent()
+      .then((res) => {
+        setEvent(res)
+        setLoading(false)
+      })
+  }, [])
+
+  return loading === true ? (
+    <h3>Loading...</h3>
+  ) : (
     <div className="container">
       <div className="main">
         <Panel />
       </div>
       <div className="chat">
-        <Chat />
+        <Chat eventId={eventid}/>
       </div>
       <div className="info">
-        <Info />
+        <Info eventData={event}/>
       </div>
     </div>
   )

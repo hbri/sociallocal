@@ -1,21 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { DateTime } from 'luxon';
 
-const Chat = () => {
+const Chat = (props) => {
+  const [ posts, setPosts ] = useState([]);
+  const [ loading, setLoading ] = useState(true);
 
-  const submitData = async function() {
-    axios('/adduser', {
-      name: 'James Bond',
-      city: 'San Francisco',
-      state: 'CA',
-      photo: 'https://mvpsocial.s3-us-west-2.amazonaws.com/profilepic1.jpeg'
-    })
+  const getPosts = async function() {
+    const allPosts = await axios.get(`/api/getposts/${props.eventId}`)
+    return allPosts.data
   }
 
-  return (
+  const convertTime = function(IsoTime) {
+    let display = DateTime.fromISO(IsoTime);
+    return display;
+  }
+
+  useEffect(() => {
+    getPosts()
+      .then((results) => {
+        setPosts(results)
+        setLoading(false)
+      })
+  }, [])
+
+  return loading === true ? (
+    <p>Posts Loading...</p>
+  ) : (
     <div>
       <h3>Chat</h3>
-
+      {
+        posts.map(({likes, content, postedBy, timestamp, comments}) => (
+          <ul>
+            <li>{content}</li>
+            <li>{postedBy}</li>
+            <li>{() => {
+              DateTime.fromISO(timestamp)
+            }}</li>
+            <li>{likes}</li>
+          </ul>
+        ))
+      }
     </div>
   )
 }

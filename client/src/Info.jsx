@@ -1,10 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const Info = () => {
+const Info = (props) => {
+
+  const [ loading, setLoading ] = useState(true)
 
   return (
     <div>
-      <h3>Info Panel</h3>
+      <h3>Event Information</h3>
+      <div>
+        {props.eventData.title}
+      </div>
+      <div>
+        {props.eventData.location}
+      </div>
+      <div>
+        {props.eventData.description}
+      </div>
+      <div>
+        {props.eventData.startTime}
+      </div>
     </div>
   )
 }

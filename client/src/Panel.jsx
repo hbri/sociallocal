@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Panel = () => {
+const Panel = ({ event }) => {
 
   return (
     <div>
