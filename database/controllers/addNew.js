@@ -56,6 +56,10 @@ exports.newPost = async function(data, eventID) {
   await curEvent.save()
 };
 
+exports.newLike = async function(data) {
+
+};
+
 exports.newGroup = async function(req, res) {
   let newGroupData = await {
     name: req.body.string,
@@ -67,4 +71,4 @@ exports.newGroup = async function(req, res) {
       console.error(err)
     }
   })
-}
+};

@@ -5,7 +5,12 @@ const Group = require('../models/group.js');
 require('../index.js');
 
 module.exports.getPosts = async function(eventID) {
-  const allPosts = await Event.findOne({_id: eventID}).populate('posts')
+  const allPosts = await Event.findOne({_id: eventID}).populate({
+    path: 'posts',
+    populate: {
+      path: 'postedBy'
+    }
+  })
   return allPosts;
 }
 

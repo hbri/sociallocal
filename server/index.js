@@ -1,9 +1,18 @@
 const express = require('express');
+const graphqlHTTP = require('express-graphql');
 const app = express();
 const port = 3006;
 const path = require('path');
+const graphQLEventSchema = require('./graphQLEventSchema.js')
 const create = require('../database/controllers/addNew.js');
 const fetchData = require('../database/controllers/getRecords.js');
+
+
+// GRAPHQL TBD
+app.use('/graphqlEndpointName', graphqlHTTP({
+  schema: graphQLEventSchema,
+  graphiql: true
+}))
 
 app.use(express.json())
 // app.use(express.static('public'))

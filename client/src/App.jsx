@@ -4,6 +4,7 @@ import axios from 'axios';
 import Panel from './Panel.jsx';
 import Chat from './Chat.jsx';
 import Info from './Info.jsx';
+import { Container, Main, ChatContainer, InfoContainer } from './Styles.jsx'
 
 
 
@@ -12,6 +13,7 @@ const App = () => {
   const [ loading, setLoading ] = useState(true);
 
   const eventid = location.pathname.split('/')[2];
+  const curUser = '5fa1d33ed51893be5f4fc736';
 
   const fetchEvent = async function() {
     try {
@@ -33,17 +35,17 @@ const App = () => {
   return loading === true ? (
     <h3>Loading...</h3>
   ) : (
-    <div className="container">
-      <div className="main">
+    <Container>
+      <Main>
         <Panel />
-      </div>
-      <div className="chat">
+      </Main>
+      <ChatContainer>
         <Chat eventId={eventid}/>
-      </div>
-      <div className="info">
+      </ChatContainer>
+      <InfoContainer>
         <Info eventData={event}/>
-      </div>
-    </div>
+      </InfoContainer>
+    </Container>
   )
 }
 

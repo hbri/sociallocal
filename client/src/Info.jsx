@@ -1,25 +1,36 @@
 import React, { useState, useEffect } from 'react';
+import { DateTime } from 'luxon'
+import { InfoBox } from './Styles.jsx'
 
 const Info = (props) => {
 
-  const [ loading, setLoading ] = useState(true)
+  const convertTime = function(isostring) {
+    const luxonObj = DateTime.fromISO(isostring);
+    const relative = luxonObj.toLocaleString(DateTime.DATETIME_SHORT);
+    return relative
+  }
 
   return (
-    <div>
+    <InfoBox>
       <h3>Event Information</h3>
       <div>
-        {props.eventData.title}
+        Title: {props.eventData.title}
       </div>
       <div>
-        {props.eventData.location}
+        Location: {props.eventData.location}
       </div>
       <div>
-        {props.eventData.description}
+        Description: {props.eventData.description}
       </div>
       <div>
-        {props.eventData.startTime}
+        <p>
+          Starts: {convertTime(props.eventData.time.start)}
+        </p>
+        <p>
+          Ends: {convertTime(props.eventData.time.end)}
+        </p>
       </div>
-    </div>
+    </InfoBox>
   )
 }
 

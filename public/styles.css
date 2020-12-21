@@ -1,0 +1,6 @@
+#chatBox9 {
+  display: grid;
+  grid-template-rows: 100px 200px 100px;
+  background-color: white;
+  border-radius: 12px;
+}
