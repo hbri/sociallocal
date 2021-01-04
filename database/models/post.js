@@ -12,19 +12,10 @@ const postSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event'
   },
-  likes: [],
-  comments: [
-    {
-      message: String,
-      postedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-      },
-      timestamp: {type: Date, default: Date.now},
-      likes: Number
-    }
-  ]
-
+  likes: {type: Number, default: 0},
+  comments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'}]
 });
 
 const Post = mongoose.model('Post', postSchema);

@@ -11,7 +11,10 @@ const eventSchema = new mongoose.Schema({
   description: String,
   tags: [{type: String}],
   image: String,
-  interested: Number,
+  interested: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   group: String,
   host: {
     type: mongoose.Schema.Types.ObjectId,
@@ -24,7 +27,11 @@ const eventSchema = new mongoose.Schema({
   posts: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Post'
-  }]
+  }],
+  likes: {
+    type: Number,
+    default: 0
+  }
 
 })
 

@@ -2,12 +2,13 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   name: String,
-  userid: Number,
+  userid: String,
   location: {
     city: String,
     state: String
   },
   photo: String,
+  password: String,
   friends: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
