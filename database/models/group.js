@@ -10,7 +10,12 @@ const groupSchema = new mongoose.Schema({
   events: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event'
-  }]
+  }],
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  logo: String
 
 })
 

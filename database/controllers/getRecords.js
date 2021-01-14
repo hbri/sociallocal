@@ -9,11 +9,25 @@ require('../index.js');
 const getuser = async (userID) => {
   try {
     const user = await User.findOne({ _id: userID });
+    console.log
     return {
       ...user._doc,
       _id: user.id,
-      events: getevents.bind(this, user._doc.events),
-      posts: getposts.bind(this, user._doc.posts)
+      events: getevents.bind(this, user.events),
+      posts: getposts.bind(this, user.posts)
+    };
+  } catch (err) {
+    throw err;
+  }
+}
+const getusers = async (userIDs) => {
+  try {
+    const user = await User.find({ _id: { $in: userIDs } });
+    return {
+      ...user._doc,
+      _id: user.id,
+      events: getevents.bind(this, user.events),
+      posts: getposts.bind(this, user.posts)
     };
   } catch (err) {
     throw err;
@@ -57,13 +71,24 @@ module.exports.getPosts = async function(eventID) {
   return allPosts;
 }
 
+module.exports.getGroup = async function(groupID) {
+  const group = await Group.findOne({_id: groupID})
+  return {
+    ...group._doc,
+    _id: group.id,
+    members: getusers.bind(this, group.members),
+    events: getevents.bind(this, group.events),
+    owner: getuser.bind(this, group.owner)
+  }
+}
+
 module.exports.getEvent = async function(eventID) {
   const curEvent = await Event.findOne({_id: eventID})
   return {
     ...curEvent._doc,
     _id: curEvent.id,
-    hosts: getuser.bind(this, curEvent._doc.host),
-    posts: getposts.bind(this, curEvent._doc.posts)
+    host: getuser.bind(this, curEvent.host),
+    posts: getposts.bind(this, curEvent.posts)
   }
 
   // return Event.findOne({_id:eventID})
@@ -78,8 +103,19 @@ module.exports.getEvent = async function(eventID) {
 }
 
 module.exports.getUser = async function(userID) {
-  const curUser = await User.findOne({userid: userID})
-  return curUser
+  try {
+    const user = await User.findOne({ _id: userID });
+    console.log(user.id)
+    return {
+      ...user._doc,
+      _id: user.id,
+      events: getevents.bind(this, user.events),
+      posts: getposts.bind(this, user.posts),
+      going: getevents.bind(this, user.going)
+    };
+  } catch (err) {
+    throw err;
+  }
 }
 
 module.exports.addEventToUser = async function (userID, eventID) {

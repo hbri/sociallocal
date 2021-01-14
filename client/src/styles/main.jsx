@@ -1,5 +1,64 @@
 import styled from 'styled-components';
 
+export const StyleBasic = styled.div`
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 3px;
+  padding: 3px;
+`;
+
+export const NavContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  font-family: Arial, Helvetica, sans-serif;
+
+`;
+
+export const MenuContainer = styled.div`
+  grid-area: 1 / 2 / span 1 / span 1;
+  display: flex;
+  justify-content: flex-end
+`;
+
+export const NavTitle = styled.div`
+  grid-area: 1 / 1 / span 1 / span 1;
+  font-family: Arial, Helvetica, sans-serif;
+  color: CornflowerBlue;
+  font-size: 20px;
+  margin: 5px;
+  padding: 5px;
+`;
+
+export const NavItems = styled.div`
+  padding: 5px;
+  margin: 5px;
+`;
+
+export const NavItemB = styled.div`
+  grid-area: 1 / 3 / span 1 / span 1;
+  color: green;
+`;
+
+export const NavItemC = styled.div`
+  grid-area: 1 / 4 / span 1 / span 1;
+`;
+
+export const NavItemD = styled.div`
+  grid-area: 1 / 5 / span 1 / span 1;
+`;
+
+
+export const SignUpContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr ;
+  font-family: Arial, Helvetica, sans-serif;
+`;
+
+export const SignUpElement = styled.div`
+  margin: 3px;
+`;
+
+
 export const Container = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;

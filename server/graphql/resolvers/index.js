@@ -21,9 +21,12 @@ module.exports.resolvers = {
   user: async (args) => {
     const userID = args.userID
     const userData = await fetchData.getUser(userID)
-    const passMatch = bcrypt.compareSync("mytestpass", userData.password)
-    console.log(passMatch)
     return userData
+  },
+  group: async (args) => {
+    const groupID = args.groupID
+    const groupData = await fetchData.getGroup(groupID)
+    return groupData
   },
   createEvent: async (args, req) => {
     if (!req.isAuth) {
@@ -76,7 +79,7 @@ module.exports.resolvers = {
     const createdPost = await create.newPost(mongoFormat, eventID)
     return createdPost
   },
-  createAttendee: async (args) => {
+  addUserAttending: async (args) => {
     // add userid to Events.attendees array
     // add eventid to Users.going array
     const userAttending = args.attendeeInput.userid;
@@ -85,6 +88,30 @@ module.exports.resolvers = {
     const userObj = await create.newAttendance(userAttending, eventAttending)
 
     return userObj
+  },
+  createGroup: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error('not authorized')
+    }
+    const dbUserID = req.authUserID
+    const mongoFormat = {
+      name: args.groupInput.name,
+      location: args.groupInput.location,
+      logo: args.groupInput.logo,
+      owner: dbUserID
+    }
+    const createdGroup = await create.newGroup(mongoFormat)
+    return createdGroup
+  },
+  addMemberToGroup: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error('not authorized')
+    }
+    const dbUserID = req.authUserID
+    const groupID = args.groupid
+
+    const newMember = await create.newGroupMember(dbUserID, groupID)
+    return newMember
   },
   addLikes: async (args) => {
     const eventObj = await create.newLike(args.eventID)

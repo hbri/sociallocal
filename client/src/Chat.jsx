@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { DateTime } from 'luxon';
-import { ChatBox, ChatTop, ChatName, ChatTime, ChatImage, ChatIcon, ChatMiddle, ChatBottom } from './Styles.jsx';
+import { ChatBox, ChatTop, ChatName, ChatTime, ChatImage, ChatIcon, ChatMiddle, ChatBottom } from './styles/main.jsx';
 
 const Chat = ({eventId}) => {
   const [ posts, setPosts ] = useState([]);

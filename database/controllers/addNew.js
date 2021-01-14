@@ -4,6 +4,77 @@ const Post = require('../models/post.js');
 const Group = require('../models/group.js');
 require('../index.js');
 
+
+const getuser = async (userID) => {
+  try {
+    const user = await User.findOne({ _id: userID });
+    return {
+      ...user._doc,
+      _id: user.id,
+      events: getevents.bind(this, user._doc.events),
+      posts: getposts.bind(this, user._doc.posts)
+    };
+  } catch (err) {
+    throw err;
+  }
+}
+
+const getgroup = async (groupID) => {
+  try {
+    const group = await Group.findOne({_id: groupID})
+    return {
+      ...group._doc,
+      _id: group.id,
+      owner: getuser.bind(this, group._doc.owner),
+      members: getusers.bind(this, group._doc.members),
+      events: getevents.bind(this, group._doc.events)
+    }
+  } catch (err) {
+    throw err
+  }
+}
+
+const getusers = async (userIDs) => {
+  try {
+    const user = await User.find({ _id: { $in: userIDs } });
+    return {
+      ...user._doc,
+      _id: user.id,
+      events: getevents.bind(this, user._doc.events),
+      posts: getposts.bind(this, user._doc.posts)
+    };
+  } catch (err) {
+    throw err;
+  }
+}
+// fetch events by id from user events array
+const getevents = async (eventIDs) => {
+  try {
+    const events = await Event.find({ _id: { $in: eventIDs } });
+    return events.map(event => {
+      return {
+        ...event._doc,
+        _id: event.id,
+        host: getuser.bind(this, event.host),
+        posts: getposts.bind(this, event.posts)
+      };
+    });
+  } catch (err) {
+    throw err;
+  }
+}
+
+const getposts = async (postIDs) => {
+  const posts = await Post.find({ _id: { $in: postIDs } });
+  return posts.map(post => {
+    return {
+      ...post._doc,
+      _id: post.id,
+      postedBy: getuser.bind(this, post.postedBy)
+    };
+  });
+}
+
 exports.newUser = async function(data) {
   let newUserData = await {
     name: data.name,
@@ -24,7 +95,7 @@ exports.newUser = async function(data) {
 // 2020-11-13T13:30:00.
 exports.newEvent = async function(data) {
   try {
-    let newEventData = {
+    const newEventData = {
       title: data.title,
       time: {
         start: data.startTime,
@@ -38,10 +109,20 @@ exports.newEvent = async function(data) {
       host: data.host
     };
 
-    let newEventObj = new Event(newEventData);
-    return newEventObj.save().then(result => {
-      return {...result._doc, id: result.id}
-    })
+    const newEventObj = new Event(newEventData);
+    const createdEvent = await newEventObj.save()
+
+    const eventGroup = await Group.findOne({_id: data.group})
+    await eventGroup.events.push(createdEvent._id)
+    await eventGroup.save()
+
+    return {
+      ...createdEvent._doc,
+      id: createdEvent.id,
+      host: getuser.bind(this, createdEvent._doc.host),
+      group: getgroup.bind(this, createdEvent._doc.group)
+    }
+
   } catch (err) {
     console.error(err)
   }
@@ -74,17 +155,11 @@ exports.newLike = async function(eventID) {
   return curEvent
 };
 
-exports.newGroup = async function(req, res) {
-  let newGroupData = await {
-    name: req.body.string,
-    location: req.body.location
-  }
-  let newGroupObj = new Group(newGroupData);
-  await newGroupObj.save((err, newGroupObj) => {
-    if (err) {
-      console.error(err)
-    }
-  })
+exports.newGroup = async function(groupData) {
+
+  const newGroupModel = new Group(groupData);
+  const newGroupObj = await newGroupModel.save()
+  return newGroupObj._doc
 };
 
 exports.newAttendance = async function(userID, eventID) {
@@ -98,3 +173,18 @@ exports.newAttendance = async function(userID, eventID) {
 
   return curUser
 };
+
+exports.newGroupMember = async function(userID, groupID) {
+  const group = await Group.findOne({_id: groupID})
+  await group.members.push(userID)
+  await group.save()
+
+  const member = await User.findOne({_id: userID})
+  await member.groups.push(groupID)
+  const updatedMember = await member.save()
+
+  return {
+    ...updatedMember._doc,
+    _id: updatedMember.id
+  }
+}

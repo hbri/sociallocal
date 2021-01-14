@@ -15,7 +15,10 @@ const eventSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }],
-  group: String,
+  group: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Group'
+  },
   host: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'

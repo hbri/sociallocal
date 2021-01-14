@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DateTime } from 'luxon'
-import { InfoBox } from './Styles.jsx'
+import { InfoBox } from './styles/main.jsx'
 
 const Info = (props) => {
 

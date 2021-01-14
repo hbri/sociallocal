@@ -1,51 +1,55 @@
 import React, { useState, useEffect } from 'react';
+import AuthContext from './context/authContext.js'
+import MainNav from './MainNav.jsx';
 import regeneratorRuntime from 'regenerator-runtime';
-import axios from 'axios';
-import Panel from './Panel.jsx';
-import Chat from './Chat.jsx';
-import Info from './Info.jsx';
-import { Container, Main, ChatContainer, InfoContainer } from './Styles.jsx'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from 'react-router-dom';
+
 
 
 
 const App = () => {
   const [ event, setEvent ] = useState({});
   const [ loading, setLoading ] = useState(true);
+  const [ authdata, setAuthdata ] = useState({token:null, userId:null})
 
   const eventid = location.pathname.split('/')[2];
   const curUser = '5fa1d33ed51893be5f4fc736';
 
-  const fetchEvent = async function() {
-    try {
-      const response = await axios.get(`/api/getevent/${eventid}`)
-      return response.data;
-    } catch (err) {
-      console.error(err)
+  // login & logout below are used in context. calling these methods anywhere will change the state in App.jsx with setAuthdata
+  const login = (token, userId) => {
+    const authDataFormat = {
+      token,
+      userId
     }
+    setAuthdata(authDataFormat)
   }
 
-  useEffect(() => {
-    fetchEvent()
-      .then((res) => {
-        setEvent(res)
-        setLoading(false)
-      })
-  }, [])
+  const logout = () => {
+    const nullAuth = {
+      token: null,
+      userId: null
+    }
+    setAuthdata(nullAuth)
+  }
 
-  return loading === true ? (
-    <h3>Loading...</h3>
-  ) : (
-    <Container>
-      <Main>
-        <Panel />
-      </Main>
-      <ChatContainer>
-        <Chat eventId={eventid}/>
-      </ChatContainer>
-      <InfoContainer>
-        <Info eventData={event}/>
-      </InfoContainer>
-    </Container>
+  return (
+    <Router>
+      <>
+        <AuthContext.Provider value={{
+          token: authdata.token,
+          userId: authdata.userId,
+          login,
+          logout
+        }}>
+          <MainNav />
+        </AuthContext.Provider>
+      </>
+    </Router>
   )
 }
 

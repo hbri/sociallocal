@@ -6,15 +6,31 @@ type Time {
   end: String
 }
 
-type Event {
+type Group {
   id: ID
+  name: String
+  members: [User]
+  location: String
+  events: [Event]
+  owner: User
+}
+
+input GroupInput {
+  name: String
+  location: String
+  logo: String
+  owner: String
+}
+
+type Event {
+  _id: ID
   title: String!
   time: Time
   description: String!
   location: String
   tags: String
   image: String
-  group: String
+  group: Group
   attendees: [User]
   host: User
   likes: Int
@@ -22,7 +38,7 @@ type Event {
 }
 
 type User {
-  id: ID
+  _id: ID
   name: String
   userid: String
   locationCity: String
@@ -31,6 +47,8 @@ type User {
   password: String
   events: [Event]
   posts: [Post]
+  groups: [Group]
+  going: [Event]
 }
 
 type AuthData {
@@ -83,17 +101,20 @@ input AttendeeInput {
 
 type RootQuery {
   events(eventID: String): Event
-  posts(eventID: String) : [Post]
-  user(userID: String) : User
+  posts(eventID: String): [Post]
+  user(userID: String): User
   login(userid: String, password: String): AuthData!
+  group(groupID: String): Group
 }
 
 type RootMutation {
   createEvent(eventInput: EventInput, timeInput: TimeInput): Event
   createUser(userInput: UserInput): User
   createPost(postInput: PostInput): Post
-  createAttendee(attendeeInput: AttendeeInput): User
+  addUserAttending(attendeeInput: AttendeeInput): User
   addLikes(eventID: String): Event
+  createGroup(groupInput: GroupInput): Group
+  addMemberToGroup(groupid: String): User
 }
 
 schema {
