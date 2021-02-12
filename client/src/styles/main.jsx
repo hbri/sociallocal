@@ -28,10 +28,11 @@ export const NavTitle = styled.div`
   padding: 5px;
 `;
 
-export const NavItems = styled.div`
+export const NavItems = styled.button`
   padding: 5px;
   margin: 5px;
 `;
+
 
 export const NavItemB = styled.div`
   grid-area: 1 / 3 / span 1 / span 1;

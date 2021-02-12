@@ -5,7 +5,8 @@ import {
   Switch,
   Route,
   Link,
-  Redirect
+  Redirect,
+  useParams
 } from 'react-router-dom';
 import axios from 'axios';
 import Panel from './Panel.jsx';
@@ -15,6 +16,7 @@ import Login from './routes/login/Login.jsx';
 import Events from './routes/events/Events.jsx';
 import Profile from './routes/user/Profile.jsx';
 import Logout from './routes/login/Logout.jsx';
+import EventDetails from './routes/events/EventDetails.jsx';
 import {
   NavContainer,
   NavItems,
@@ -28,12 +30,18 @@ const StyledLinks = styled(Link)`
   text-decoration: none;
 `;
 
+const StyledButton = styled.button`
+  border: none;
+  color: green;
+`;
+
 const MainNav = () => {
 
   const authorization = useContext(AuthContext)
 
   return (
     <>
+      <Router>
         <nav>
           <NavContainer>
             <NavTitle>
@@ -45,7 +53,7 @@ const MainNav = () => {
               </NavItems>
               <NavItems>
                 {!authorization.token && <StyledLinks to="/login">Login</StyledLinks>}
-                {authorization.token && <StyledLinks to="/logout">Logout</StyledLinks>}
+                {authorization.token && <StyledButton onClick={authorization.logout}>Logout</StyledButton>}
               </NavItems>
               <NavItems>
                 <StyledLinks to="/events">Events</StyledLinks>
@@ -59,21 +67,18 @@ const MainNav = () => {
         </nav>
         <Switch>
           {authorization.token && <Redirect from="/login" to="/userprofile" exact />}
-          {authorization.token && <Redirect from="/logout" to="/" exact />}
           <Route path="/login">
             <Login editThis={'demo'}/>
           </Route>
           <Route path="/events">
-            <Events someParam={'demo'} />
+            <Events eventid={'5feebbffd21fe00f292ca356'} />
           </Route>
           <Route path="/userprofile">
             <Profile />
           </Route>
-          <Route path="/logout">
-            <Logout />
-          </Route>
+          <Route path="/eventdetail/:eventDetailID" children={<EventDetails />} />
         </Switch>
-
+      </Router>
     </>
   )
 }

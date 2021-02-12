@@ -61,6 +61,17 @@ const getposts = async (postIDs) => {
   });
 }
 
+const getgroup = async (groupID) => {
+  const group = await Group.findOne({_id: groupID})
+  return {
+    ...group._doc,
+    _id: group.id,
+    members: getusers.bind(this, group.members),
+    events: getevents.bind(this, group.events),
+    owner: getuser.bind(this, group.owner)
+  }
+}
+
 module.exports.getPosts = async function(eventID) {
   const allPosts = await Event.findOne({_id: eventID}).populate({
     path: 'posts',
@@ -88,7 +99,8 @@ module.exports.getEvent = async function(eventID) {
     ...curEvent._doc,
     _id: curEvent.id,
     host: getuser.bind(this, curEvent.host),
-    posts: getposts.bind(this, curEvent.posts)
+    posts: getposts.bind(this, curEvent.posts),
+    group: getgroup.bind(this, curEvent.group)
   }
 
   // return Event.findOne({_id:eventID})
