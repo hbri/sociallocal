@@ -18,8 +18,10 @@ const Login = ({editThis}) => {
   const handleChange = (e) => {
     const field = e.target.id;
     const fieldValue = e.target.value;
+
     const curFields = {...inputFields};
     curFields[field] = fieldValue;
+
     setInputFields(curFields)
   }
 

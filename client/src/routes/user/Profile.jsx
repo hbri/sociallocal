@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import AuthContext from '../../context/authContext.js';
 import axios from 'axios';
 
@@ -58,7 +59,7 @@ const Profile = (props) => {
         userData.events.map((event) => {
           return (
             <>
-            <li>{event.title}</li>
+            <li><Link to={`eventdetail/${event._id}`}>{event.title}</Link></li>
             </>
           )
         })
