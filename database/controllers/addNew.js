@@ -133,6 +133,7 @@ exports.newPost = async function(data, eventID) {
     content: data.content,
     postedBy: data.postedBy
   };
+  console.log(newPostData)
   // create & save new post document
   const newPostObj = new Post(newPostData);
   const newPost = await newPostObj.save()

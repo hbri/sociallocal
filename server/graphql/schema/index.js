@@ -92,6 +92,7 @@ input TimeInput {
 
 input PostInput {
   content: String
+  eventid: String
 }
 
 input AttendeeInput {

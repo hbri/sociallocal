@@ -66,16 +66,19 @@ module.exports.resolvers = {
     return res
   },
   createPost: async (args, req) => {
+    console.log(req)
     if (!req.isAuth) {
       throw new Error('not authorized')
     }
     const dbUserID = req.authUserID;
+    const eventID = args.postInput.eventid
     const mongoFormat = {
       content: args.postInput.content,
       postedBy: dbUserID
     }
 
-    const eventID = '5feebbffd21fe00f292ca356'
+    console.log(mongoFormat)
+    // const eventID = '5feebbffd21fe00f292ca356'
     const createdPost = await create.newPost(mongoFormat, eventID)
     return createdPost
   },

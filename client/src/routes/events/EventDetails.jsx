@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { OutsideBox } from './eventStyle.js';
+import CommentBox from './CommentBox.jsx';
+import {
+  EventContainer
+} from './eventStyle.js';
 import axios from 'axios';
-import { DateTime } from 'luxon';
 
 const EventDetails = ({eventid}) => {
 
@@ -41,6 +43,9 @@ const EventDetails = ({eventid}) => {
               posts {
                 timestamp
                 content
+                postedBy {
+                  userid
+                }
               }
             }
           }
@@ -48,6 +53,7 @@ const EventDetails = ({eventid}) => {
       }
     })
 
+    console.log(fetchedData.data.data.events)
     setEventDetails(fetchedData.data.data.events)
 
     const updatedStartDate = new Date(parseInt(fetchedData.data.data.events.time.start)).toString();
@@ -67,8 +73,9 @@ const EventDetails = ({eventid}) => {
   }, [])
 
   return eventDetails ? (
-    <div>
-      <h3>Event Details Page</h3>
+    <EventContainer>
+      <h4>Event Details</h4>
+      <h2>{eventDetails.title}</h2>
       <ul>
         <li>Title: {eventDetails.title}</li>
         <li>Description: {eventDetails.description}</li>
@@ -79,14 +86,10 @@ const EventDetails = ({eventid}) => {
         <li>Group: {eventDetails.group.name}</li>
         <li>Host: {eventDetails.host.name}</li>
         <li>Likes: {eventDetails.likes}</li>
+        </ul>
         <h3>Posts:</h3>
-        {
-          eventDetails.posts.map((post) => (
-            <li>{post.content}</li>
-          ))
-        }
-      </ul>
-    </div>
+          <CommentBox postList={eventDetails.posts} eventdetailid={eventDetailID} />
+    </EventContainer>
   ) : (
     <p>Loading</p>
   )
