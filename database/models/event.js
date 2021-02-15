@@ -34,7 +34,11 @@ const eventSchema = new mongoose.Schema({
   likes: {
     type: Number,
     default: 0
-  }
+  },
+  pendingRequests: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }]
 
 })
 

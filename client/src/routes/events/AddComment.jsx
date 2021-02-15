@@ -52,6 +52,7 @@ const AddComment = ({eventid, updateList, currentList}) => {
           userid: resultPath.postedBy.userid
         }
       }
+      console.log(resultPath)
       updatedList.push(newCommentPush);
       updateList(updatedList)
     })

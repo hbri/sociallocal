@@ -7,12 +7,13 @@ type Time {
 }
 
 type Group {
-  id: ID
+  _id: ID
   name: String
   members: [User]
   location: String
   events: [Event]
   owner: User
+  pendingRequests: [User]
 }
 
 input GroupInput {
@@ -35,6 +36,7 @@ type Event {
   host: User
   likes: Int
   posts: [Post]
+  pendingRequests: [User]
 }
 
 type User {
@@ -49,6 +51,8 @@ type User {
   posts: [Post]
   groups: [Group]
   going: [Event]
+  pendingEvents: [Event]
+  pendingGroups: [Group]
 }
 
 type AuthData {
@@ -58,7 +62,7 @@ type AuthData {
 }
 
 type Post {
-  id: ID
+  _id: ID
   content: String
   postedBy: User
   timestamp: String
@@ -106,6 +110,7 @@ type RootQuery {
   user(userID: String): User
   login(userid: String, password: String): AuthData!
   group(groupID: String): Group
+  allGroups: [Group]
 }
 
 type RootMutation {

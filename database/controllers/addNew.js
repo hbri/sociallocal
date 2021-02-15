@@ -118,7 +118,7 @@ exports.newEvent = async function(data) {
 
     return {
       ...createdEvent._doc,
-      id: createdEvent.id,
+      _id: createdEvent.id,
       host: getuser.bind(this, createdEvent._doc.host),
       group: getgroup.bind(this, createdEvent._doc.group)
     }
@@ -146,7 +146,12 @@ exports.newPost = async function(data, eventID) {
   const curUser = await User.findOne({_id: data.postedBy})
   await curUser.posts.push(postId)
   await curUser.save()
-  return newPost._doc
+  return {
+    ...newPost._doc,
+    _id: newPost.id,
+    postedBy: getuser.bind(this, newPost.postedBy)
+  }
+
 };
 
 exports.newLike = async function(eventID) {
@@ -160,7 +165,18 @@ exports.newGroup = async function(groupData) {
 
   const newGroupModel = new Group(groupData);
   const newGroupObj = await newGroupModel.save()
-  return newGroupObj._doc
+
+  const groupOwnerId = newGroupObj._doc.owner
+  const groupOwner = await User.findOne({ _id: groupOwnerId })
+  await groupOwner.groups.push(newGroupObj._id)
+  await groupOwner.save()
+
+  return {
+    ...newGroupObj._doc,
+    _id: newGroupObj.id,
+    members: getusers.bind(this, newGroupObj.members),
+    owner: getuser.bind(this, newGroupObj.owner)
+  }
 };
 
 exports.newAttendance = async function(userID, eventID) {

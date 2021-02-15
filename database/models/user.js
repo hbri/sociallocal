@@ -32,6 +32,14 @@ const userSchema = new mongoose.Schema({
   going: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event'
+  }],
+  pendingEvents: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Event'
+  }],
+  pendingGroups: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Group'
   }]
 
 });

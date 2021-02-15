@@ -34,7 +34,7 @@ const CommentBox = ({postList, eventdetailid}) => {
     <AddComment eventid={eventdetailid} updateList={updatePosts} currentList={commentList}/>
     </>
   ) : (
-    <p>Loading Comments...</p>
+    <AddComment eventid={eventdetailid} updateList={updatePosts} currentList={[]}/>
   )
 }
 

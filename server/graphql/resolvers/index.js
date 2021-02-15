@@ -2,9 +2,6 @@ const create = require('../../../database/controllers/addNew.js');
 const fetchData = require('../../../database/controllers/getRecords.js');
 const bcrypt = require('bcryptjs');
 const User = require('../../../database/models/user.js');
-const Event = require('../../../database/models/event.js');
-const Post = require('../../../database/models/post.js');
-const Group = require('../../../database/models/group.js');
 require('../../../database/index.js');
 const jwt = require('jsonwebtoken');
 
@@ -27,6 +24,10 @@ module.exports.resolvers = {
     const groupID = args.groupID
     const groupData = await fetchData.getGroup(groupID)
     return groupData
+  },
+  allGroups: async (args) => {
+    const allGroupData = await fetchData.getAllGroups()
+    return allGroupData;
   },
   createEvent: async (args, req) => {
     if (!req.isAuth) {
