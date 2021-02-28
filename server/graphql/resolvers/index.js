@@ -78,8 +78,6 @@ module.exports.resolvers = {
       postedBy: dbUserID
     }
 
-    console.log(mongoFormat)
-    // const eventID = '5feebbffd21fe00f292ca356'
     const createdPost = await create.newPost(mongoFormat, eventID)
     return createdPost
   },
@@ -107,19 +105,31 @@ module.exports.resolvers = {
     const createdGroup = await create.newGroup(mongoFormat)
     return createdGroup
   },
-  addMemberToGroup: async (args, req) => {
+  approveMemberToGroup: async (args, req) => {
     if (!req.isAuth) {
       throw new Error('not authorized')
     }
-    const dbUserID = req.authUserID
+    const dbUserID = req.authUserID;
+    const requestingUser = args.requestinguser;
     const groupID = args.groupid
 
-    const newMember = await create.newGroupMember(dbUserID, groupID)
+    const newMember = await create.approveGroupMember(requestingUser, groupID)
     return newMember
   },
   addLikes: async (args) => {
-    const eventObj = await create.newLike(args.eventID)
+    const eventObj = await create.newLike(args.eventID);
     return eventObj
+  },
+  requestJoinGroup: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error('Please log in to join this group!')
+    }
+    const requester = args.userid;
+    const requested = args.groupid;
+
+    const response = await create.requestGroup(requester, requested)
+
+    return response
   },
   login: async ({userid, password}) => {
     const authUser = await User.findOne({userid: userid})

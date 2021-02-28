@@ -191,13 +191,15 @@ exports.newAttendance = async function(userID, eventID) {
   return curUser
 };
 
-exports.newGroupMember = async function(userID, groupID) {
+exports.approveGroupMember = async function(userID, groupID) {
   const group = await Group.findOne({_id: groupID})
   await group.members.push(userID)
+  await group.pendingRequests.pull({_id: userID})
   await group.save()
 
   const member = await User.findOne({_id: userID})
   await member.groups.push(groupID)
+  await member.pendingGroups.pull({_id: groupID})
   const updatedMember = await member.save()
 
   return {
@@ -205,3 +207,21 @@ exports.newGroupMember = async function(userID, groupID) {
     _id: updatedMember.id
   }
 }
+
+exports.requestGroup = async function(userID, groupID) {
+  try {
+    const requestingUser = await User.findOne({ _id: userID })
+    await requestingUser.pendingGroups.push(groupID)
+    await requestingUser.save()
+
+    const requestedGroup = await Group.findOne({ _id: groupID })
+    await requestedGroup.pendingRequests.push(userID)
+    await requestedGroup.save()
+
+    return true
+
+  } catch (err) {
+    console.log(err)
+  }
+}
+

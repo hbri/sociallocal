@@ -120,7 +120,8 @@ type RootMutation {
   addUserAttending(attendeeInput: AttendeeInput): User
   addLikes(eventID: String): Event
   createGroup(groupInput: GroupInput): Group
-  addMemberToGroup(groupid: String): User
+  approveMemberToGroup(groupid: String, requestinguser: String): User
+  requestJoinGroup(groupid: String, userid: String) : Boolean
 }
 
 schema {

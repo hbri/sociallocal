@@ -16,7 +16,7 @@ const GroupDetails = (props) => {
 
   const authorization = useContext(AuthContext);
   const [ groupData, setGroupData ] = useState(null);
-  const [ authorizedUsers, setAuthorizedUsers ] = useState([])
+  const [ authToAddEvent, setAuthToAddEvent ] = useState(false)
   const { groupDetailID } = useParams();
 
   const requestBody = {
@@ -59,12 +59,59 @@ const GroupDetails = (props) => {
     const loggedInUser = authorization.userId;
     const groupMembers = fetchedData.data.data.group.members;
 
-    const allAuthMembers = groupMembers.map(member => member._id)
-    allAuthMembers.push(loggedInUser)
+    const allAuthMembers = groupMembers.map(member => member._id);
+    allAuthMembers.push(fetchedData.data.data.group.owner._id);
 
-    setAuthorizedUsers(allAuthMembers)
-
+    allAuthMembers.forEach((member) => {
+      if (loggedInUser === member) {
+        setAuthToAddEvent(true)
+      }
+    })
   };
+
+  const requestGroupJoin = () => {
+    const userid = authorization.userId;
+    const groupid = groupDetailID;
+
+    axios({
+      url: '/graphql',
+      method: 'post',
+      headers: {
+        'Authorization': `Bearer ${authorization.token}`
+      },
+      data: {
+        query: `
+          mutation {
+            requestJoinGroup(groupid:"${groupid}", userid:"${userid}")
+          }
+        `
+      }
+    })
+  }
+
+  const approveJoinRequest = (userIdToApprove) => {
+    const groupid = groupDetailID;
+    const userid = userIdToApprove;
+
+    axios({
+      url: '/graphql',
+      method: 'post',
+      headers: {
+        'Authorization': `Bearer ${authorization.token}`
+      },
+      data: {
+        query: `
+          mutation {
+            approveMemberToGroup(groupid:"${groupid}", requestinguser: "${userid}") {
+              userid
+            }
+          }
+        `
+      }
+    }).then(result => {
+      console.log(result.data.data.approveMemberToGroup)
+    })
+  }
 
   useEffect(() => {
     getGroupDetails()
@@ -92,7 +139,26 @@ const GroupDetails = (props) => {
         ))
       }
     </ul>
-    <h4><Link to={`/createevent/${groupDetailID}`}>Create Event</Link></h4>
+    {
+      groupData.owner._id === authorization.userId && <><h4>Pending Join Requets:</h4>
+      <ul>
+        {
+          groupData.pendingRequests.map(request => (
+            <>
+            <li>{request.userid}</li>
+            <button onClick={() => approveJoinRequest(request._id)}>Approve</button>
+            </>
+          ))
+        }
+      </ul>
+      </>
+    }
+    {
+      authToAddEvent && <h4><Link to={`/createevent/${groupDetailID}`}>Create Event</Link></h4>
+    }
+    {
+      !authToAddEvent && <button onClick={requestGroupJoin}>Request To Join This Group</button>
+    }
     </GroupContainer>
   ) : (
     <p>Loading Data...</p>

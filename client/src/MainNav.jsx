@@ -74,15 +74,15 @@ const MainNav = () => {
           <Route path="/groups">
             <Groups />
           </Route>
-          {!authorization.token && <Redirect to="/" exact />}
-          <Route path="/userprofile">
-            <Profile />
+          <Route path="/groupdetail/:groupDetailID">
+            <GroupDetails />
           </Route>
+          {!authorization.token && <Redirect to="/" exact />}
           <Route path="/eventdetail/:eventDetailID">
             <EventDetails />
           </Route>
-          <Route path="/groupdetail/:groupDetailID">
-            <GroupDetails />
+          <Route path="/userprofile">
+            <Profile />
           </Route>
           <Route path="/createevent/:groupID">
             <CreateEvent />
