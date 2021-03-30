@@ -1,12 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useContext
+} from 'react';
+import AuthContext from '../../context/authContext.js';
 import { useParams } from 'react-router-dom';
 import CommentBox from './CommentBox.jsx';
 import {
-  EventContainer
+  EventContainer,
+  ButtonLink
 } from './eventStyle.js';
 import axios from 'axios';
 
 const EventDetails = ({eventid}) => {
+
+  const authorization = useContext(AuthContext);
 
   const [ eventDetails, setEventDetails ] = useState(null);
   const [ properDate, setProperDate ] = useState({start: null, end: null});
@@ -36,6 +44,9 @@ const EventDetails = ({eventid}) => {
               attendees {
                 name
               }
+              interested {
+                name
+              }
               host {
                 name
               }
@@ -53,7 +64,7 @@ const EventDetails = ({eventid}) => {
       }
     })
 
-    console.log(fetchedData.data.data.events)
+    // console.log(fetchedData.data.data.events)
     setEventDetails(fetchedData.data.data.events)
 
     const updatedStartDate = new Date(parseInt(fetchedData.data.data.events.time.start)).toString();
@@ -63,6 +74,49 @@ const EventDetails = ({eventid}) => {
     setProperDate({
       start: updatedStartDate,
       end: updatedEndDate
+    })
+
+  }
+
+  const attendEvent = async () => {
+    const loggedInUser = authorization.userId;
+    const eventPageId = eventDetailID;
+
+    const addAttendee = await axios({
+      url: '/graphql',
+      method: 'post',
+      data: {
+        query: `
+          mutation {
+            addUserAttending(attendeeInput: {
+              eventid: "${eventPageId}"
+              userid: "${loggedInUser}"
+            }) {
+              name
+            }
+          }
+        `
+      }
+    })
+
+  }
+
+  const interestedInEvent = async () => {
+    const loggedInUser = authorization.userId;
+    const eventPageId = eventDetailID;
+
+    await axios({
+      url: '/graphql',
+      method: 'post',
+      data: {
+        query: `
+          mutation {
+            addUserInterested(eventid: "${eventPageId}", userid: "${loggedInUser}") {
+              name
+            }
+          }
+        `
+      }
     })
 
   }
@@ -87,6 +141,26 @@ const EventDetails = ({eventid}) => {
         <li>Host: {eventDetails.host.name}</li>
         <li>Likes: {eventDetails.likes}</li>
         </ul>
+        <h3>Attending:</h3>
+        <ul>
+          {
+            eventDetails.attendees.map((attendee) => (
+              <li>{attendee.name}</li>
+            ))
+          }
+        </ul>
+        <h3>Interested:</h3>
+        <ul>
+          {
+            eventDetails.interested.map((interestee) => (
+              <li>{interestee.name}</li>
+            ))
+          }
+        </ul>
+        <h3>Event Actions:</h3>
+        <ButtonLink onClick={interestedInEvent}>Interested</ButtonLink>
+        <ButtonLink onClick={attendEvent}>Going</ButtonLink>
+        <ButtonLink>Like</ButtonLink>
         <h3>Posts:</h3>
           <CommentBox postList={eventDetails.posts} eventdetailid={eventDetailID} />
     </EventContainer>

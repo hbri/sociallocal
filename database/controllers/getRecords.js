@@ -119,7 +119,9 @@ module.exports.getEvent = async function(eventID) {
     host: getuser.bind(this, curEvent.host),
     posts: getposts.bind(this, curEvent.posts),
     group: getgroup.bind(this, curEvent.group),
-    pendingRequests: getusers.bind(this, curEvent.pendingRequests)
+    pendingRequests: getusers.bind(this, curEvent.pendingRequests),
+    attendees: getusers.bind(this, curEvent.attendees),
+    interested: getusers.bind(this, curEvent.interested)
   }
 
   // return Event.findOne({_id:eventID})

@@ -33,6 +33,7 @@ type Event {
   image: String
   group: Group
   attendees: [User]
+  interested: [User]
   host: User
   likes: Int
   posts: [Post]
@@ -104,6 +105,7 @@ input AttendeeInput {
   userid: String
 }
 
+
 type RootQuery {
   events(eventID: String): Event
   posts(eventID: String): [Post]
@@ -118,6 +120,7 @@ type RootMutation {
   createUser(userInput: UserInput): User
   createPost(postInput: PostInput): Post
   addUserAttending(attendeeInput: AttendeeInput): User
+  addUserInterested(eventid: String, userid: String): User
   addLikes(eventID: String): Event
   createGroup(groupInput: GroupInput): Group
   approveMemberToGroup(groupid: String, requestinguser: String): User

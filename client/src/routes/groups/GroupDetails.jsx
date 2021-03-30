@@ -132,13 +132,16 @@ const GroupDetails = (props) => {
       }
     </ul>
     <h4>Events:</h4>
-    <ul>
+    {
+      authToAddEvent && <ul>
       {
         groupData.events.map((event) => (
           <li><Link to={`/eventdetail/${event._id}`}>{event.title}</Link></li>
         ))
       }
     </ul>
+    }
+
     {
       groupData.owner._id === authorization.userId && <><h4>Pending Join Requets:</h4>
       <ul>

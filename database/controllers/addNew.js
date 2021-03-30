@@ -188,7 +188,25 @@ exports.newAttendance = async function(userID, eventID) {
   await curEvent.attendees.push(userID)
   await curEvent.save()
 
-  return curUser
+  return {
+    ...curUser._doc,
+    _id: curUser.id
+  }
+};
+
+exports.newInterested = async function(userID, eventID) {
+  const curUser = await User.findOne({_id: userID})
+  await curUser.interested.push(eventID)
+  await curUser.save()
+
+  const curEvent = await Event.findOne({_id: eventID})
+  await curEvent.interested.push(userID)
+  await curEvent.save()
+
+  return {
+    ...curUser._doc,
+    _id: curUser.id
+  }
 };
 
 exports.approveGroupMember = async function(userID, groupID) {

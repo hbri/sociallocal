@@ -20,3 +20,9 @@ export const InsideBox = styled.div`
   font-family: Arial, Helvetica, sans-serif;
   border: 1px solid blue;
 `;
+
+export const ButtonLink = styled.button`
+  margin: 5px;
+  padding: 5px;
+  color: blue;
+`;

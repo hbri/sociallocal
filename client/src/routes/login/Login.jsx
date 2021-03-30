@@ -116,7 +116,7 @@ const Login = ({editThis}) => {
             id="city"
             onChange={handleChange}
           ></input>
-          </SignUpElement>
+          8</SignUpElement>
           <SignUpElement>
           <label>State:</label>
           <input

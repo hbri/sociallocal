@@ -91,6 +91,17 @@ module.exports.resolvers = {
 
     return userObj
   },
+  addUserInterested: async (args) => {
+    const userInterested = args.userid;
+    const eventInterested = args.eventid;
+
+    const userObj = await create.newInterested(userInterested, eventInterested)
+
+    return {
+      ...userObj._doc,
+      _id: userObj.id
+    }
+  },
   createGroup: async (args, req) => {
     if (!req.isAuth) {
       throw new Error('not authorized')
