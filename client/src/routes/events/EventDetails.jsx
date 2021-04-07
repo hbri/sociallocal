@@ -18,6 +18,11 @@ const EventDetails = ({eventid}) => {
 
   const [ eventDetails, setEventDetails ] = useState(null);
   const [ properDate, setProperDate ] = useState({start: null, end: null});
+  const [ userStates, setUserStates ] = useState({
+    interested: false,
+    attending: false,
+    liked: false
+  })
 
   const { eventDetailID } = useParams();
 
@@ -43,9 +48,11 @@ const EventDetails = ({eventid}) => {
               }
               attendees {
                 name
+                _id
               }
               interested {
                 name
+                _id
               }
               host {
                 name
@@ -76,6 +83,23 @@ const EventDetails = ({eventid}) => {
       end: updatedEndDate
     })
 
+    const loggedInUser = authorization.userId;
+    const updatedUserStates = {...userStates}
+
+    eventDetails.attendees.forEach(attendee => {
+      if (attendee.id === loggedInUser) {
+        updatedUserStates.attending = true;
+      }
+    })
+
+    eventDetails.interested.forEach(interest => {
+      if (interest.id === loggedInUser) {
+        updatedUserStates.interested = true    }
+    })
+
+    setUserStates(updatedUserStates)
+    console.log(userStates)
+
   }
 
   const attendEvent = async () => {
@@ -98,6 +122,11 @@ const EventDetails = ({eventid}) => {
         `
       }
     })
+    const loggedInUsername = addAttendee.data.data.addUserAttending.name;
+    const updatedEventDetails = {...eventDetails};
+
+    updatedEventDetails.attendees.push({name: loggedInUsername})
+    setEventDetails(updatedEventDetails)
 
   }
 
@@ -124,7 +153,7 @@ const EventDetails = ({eventid}) => {
 
   useEffect(() => {
     getDetails(eventDetailID)
-  }, [])
+  }, eventDetails)
 
   return eventDetails ? (
     <EventContainer>
@@ -158,9 +187,21 @@ const EventDetails = ({eventid}) => {
           }
         </ul>
         <h3>Event Actions:</h3>
-        <ButtonLink onClick={interestedInEvent}>Interested</ButtonLink>
-        <ButtonLink onClick={attendEvent}>Going</ButtonLink>
-        <ButtonLink>Like</ButtonLink>
+        {
+          userStates.interested
+          ? <ButtonLink onClick={interestedInEvent}>Interested</ButtonLink>
+          : <ButtonLink>Not Interested</ButtonLink>
+        }
+        {
+          userStates.interested
+          ? <ButtonLink onClick={attendEvent}>Going</ButtonLink>
+          : <ButtonLink>Not Going</ButtonLink>
+        }
+        {
+          userStates.interested
+          ? <ButtonLink>Like</ButtonLink>
+          : <ButtonLink>Dislike</ButtonLink>
+        }
         <h3>Posts:</h3>
           <CommentBox postList={eventDetails.posts} eventdetailid={eventDetailID} />
     </EventContainer>
