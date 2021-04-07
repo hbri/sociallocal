@@ -87,18 +87,17 @@ const EventDetails = ({eventid}) => {
     const updatedUserStates = {...userStates}
 
     eventDetails.attendees.forEach(attendee => {
-      if (attendee.id === loggedInUser) {
+      if (attendee._id === loggedInUser) {
         updatedUserStates.attending = true;
       }
     })
 
     eventDetails.interested.forEach(interest => {
-      if (interest.id === loggedInUser) {
+      if (interest._id === loggedInUser) {
         updatedUserStates.interested = true    }
     })
 
     setUserStates(updatedUserStates)
-    console.log(userStates)
 
   }
 
@@ -125,7 +124,45 @@ const EventDetails = ({eventid}) => {
     const loggedInUsername = addAttendee.data.data.addUserAttending.name;
     const updatedEventDetails = {...eventDetails};
 
-    updatedEventDetails.attendees.push({name: loggedInUsername})
+    updatedEventDetails.attendees.push({name: loggedInUsername, _id:loggedInUser})
+
+    const updatedUserStates = {...userStates};
+    updatedUserStates.attending = true;
+    setUserStates(updatedUserStates)
+
+    setEventDetails(updatedEventDetails)
+
+  }
+
+  const removeEvent = async () => {
+    const loggedInUser = authorization.userId;
+    const eventPageId = eventDetailID;
+
+    const removeAttendee = await axios({
+      url: '/graphql',
+      method: 'post',
+      data: {
+        query: `
+          mutation {
+            removeUserAttending(eventid: "${eventPageId}", userid: "${loggedInUser}") {
+              name
+            }
+          }
+        `
+      }
+    })
+    const loggedInUsername = removeAttendee.data.data.removeUserAttending.name;
+    const updatedEventDetails = {...eventDetails};
+
+    updatedEventDetails.attendees.forEach((attendee, i) => {
+      if (attendee._id === loggedInUser) {
+        updatedEventDetails.attendees.splice(i, 1);
+        const updatedUserStates = {...userStates};
+        updatedUserStates.attending = false;
+        setUserStates(updatedUserStates)
+      }
+    })
+
     setEventDetails(updatedEventDetails)
 
   }
@@ -189,18 +226,18 @@ const EventDetails = ({eventid}) => {
         <h3>Event Actions:</h3>
         {
           userStates.interested
-          ? <ButtonLink onClick={interestedInEvent}>Interested</ButtonLink>
-          : <ButtonLink>Not Interested</ButtonLink>
+          ? <ButtonLink>Not Interested</ButtonLink>
+          : <ButtonLink onClick={interestedInEvent}>Interested</ButtonLink>
         }
         {
-          userStates.interested
-          ? <ButtonLink onClick={attendEvent}>Going</ButtonLink>
-          : <ButtonLink>Not Going</ButtonLink>
+          userStates.attending
+          ? <ButtonLink onClick={removeEvent}>Not Going</ButtonLink>
+          : <ButtonLink onClick={attendEvent}>Going</ButtonLink>
         }
         {
-          userStates.interested
-          ? <ButtonLink>Like</ButtonLink>
-          : <ButtonLink>Dislike</ButtonLink>
+          userStates.liked
+          ? <ButtonLink>Dislike</ButtonLink>
+          : <ButtonLink>Like</ButtonLink>
         }
         <h3>Posts:</h3>
           <CommentBox postList={eventDetails.posts} eventdetailid={eventDetailID} />

@@ -91,6 +91,17 @@ module.exports.resolvers = {
 
     return userObj
   },
+  removeUserAttending: async (args) => {
+    const userRemoving = args.userid;
+    const eventRemoving = args.eventid;
+
+    const userObj = await create.removeAttendance(userRemoving, eventRemoving)
+
+    return {
+      ...userObj._doc,
+      _id: userObj.id
+    }
+  },
   addUserInterested: async (args) => {
     const userInterested = args.userid;
     const eventInterested = args.eventid;

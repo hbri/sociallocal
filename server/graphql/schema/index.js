@@ -120,6 +120,7 @@ type RootMutation {
   createUser(userInput: UserInput): User
   createPost(postInput: PostInput): Post
   addUserAttending(attendeeInput: AttendeeInput): User
+  removeUserAttending(eventid: String, userid: String): User
   addUserInterested(eventid: String, userid: String): User
   addLikes(eventID: String): Event
   createGroup(groupInput: GroupInput): Group

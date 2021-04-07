@@ -194,6 +194,22 @@ exports.newAttendance = async function(userID, eventID) {
   }
 };
 
+exports.removeAttendance = async function(userID, eventID) {
+  const curUser = await User.findOne({_id: userID})
+
+  await curUser.going.pull(eventID)
+  await curUser.save()
+
+  const curEvent = await Event.findOne({_id: eventID})
+  await curEvent.attendees.pull(userID)
+  await curEvent.save()
+
+  return {
+    ...curUser._doc,
+    _id: curUser.id
+  }
+}
+
 exports.newInterested = async function(userID, eventID) {
   const curUser = await User.findOne({_id: userID})
   await curUser.interested.push(eventID)
