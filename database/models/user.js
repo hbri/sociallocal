@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema({
   pendingGroups: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Group'
+  }],
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Event'
   }]
 
 });

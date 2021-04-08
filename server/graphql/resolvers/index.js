@@ -139,8 +139,8 @@ module.exports.resolvers = {
     return newMember
   },
   addLikes: async (args) => {
-    const eventObj = await create.newLike(args.eventID);
-    return eventObj
+    const userObj = await create.newLike(args.eventID, args.userid);
+    return userObj
   },
   requestJoinGroup: async (args, req) => {
     if (!req.isAuth) {

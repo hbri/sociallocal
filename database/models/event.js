@@ -31,10 +31,10 @@ const eventSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Post'
   }],
-  likes: {
-    type: Number,
-    default: 0
-  },
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   pendingRequests: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'

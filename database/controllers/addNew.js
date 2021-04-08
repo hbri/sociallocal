@@ -154,11 +154,19 @@ exports.newPost = async function(data, eventID) {
 
 };
 
-exports.newLike = async function(eventID) {
+exports.newLike = async function(eventID, userid) {
   const curEvent = await Event.findOne({_id: eventID})
-  curEvent.likes = curEvent.likes + 1
+  await curEvent.likes.push(userid)
   await curEvent.save()
-  return curEvent
+
+  const curUser = await User.findOne({_id: userid})
+  await curUser.likes.push(eventID)
+  await curUser.save()
+
+  return {
+    ...curUser._doc,
+    _id: curUser.id
+  }
 };
 
 exports.newGroup = async function(groupData) {

@@ -35,7 +35,7 @@ type Event {
   attendees: [User]
   interested: [User]
   host: User
-  likes: Int
+  likes: [User]
   posts: [Post]
   pendingRequests: [User]
 }
@@ -54,6 +54,7 @@ type User {
   going: [Event]
   pendingEvents: [Event]
   pendingGroups: [Group]
+  likes: [Event]
 }
 
 type AuthData {
@@ -122,7 +123,7 @@ type RootMutation {
   addUserAttending(attendeeInput: AttendeeInput): User
   removeUserAttending(eventid: String, userid: String): User
   addUserInterested(eventid: String, userid: String): User
-  addLikes(eventID: String): Event
+  addLikes(eventID: String, userid: String): User
   createGroup(groupInput: GroupInput): Group
   approveMemberToGroup(groupid: String, requestinguser: String): User
   requestJoinGroup(groupid: String, userid: String) : Boolean

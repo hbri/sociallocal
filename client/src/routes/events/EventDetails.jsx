@@ -57,7 +57,9 @@ const EventDetails = ({eventid}) => {
               host {
                 name
               }
-              likes
+              likes {
+                _id
+              }
               posts {
                 timestamp
                 content
@@ -98,6 +100,8 @@ const EventDetails = ({eventid}) => {
     })
 
     setUserStates(updatedUserStates)
+
+    console.log(eventDetails)
 
   }
 
@@ -187,6 +191,27 @@ const EventDetails = ({eventid}) => {
 
   }
 
+  const likeEvent = async () => {
+    const loggedInUser = authorization.userId;
+    const eventPageId = eventDetailID;
+
+    const newLike = await axios({
+      url: '/graphql',
+      method: 'post',
+      data: {
+        query: `
+          mutation {
+            addLikes(eventID: "${eventPageId}", userid: "${loggedInUser}") {
+              name
+            }
+          }
+        `
+      }
+    })
+
+    console.log(newLike.data.data)
+  }
+
 
   useEffect(() => {
     getDetails(eventDetailID)
@@ -205,7 +230,7 @@ const EventDetails = ({eventid}) => {
         <li>Tags: {eventDetails.tags}</li>
         <li>Group: {eventDetails.group.name}</li>
         <li>Host: {eventDetails.host.name}</li>
-        <li>Likes: {eventDetails.likes}</li>
+        <li>Likes: {eventDetails.likes.length}</li>
         </ul>
         <h3>Attending:</h3>
         <ul>
@@ -237,7 +262,7 @@ const EventDetails = ({eventid}) => {
         {
           userStates.liked
           ? <ButtonLink>Dislike</ButtonLink>
-          : <ButtonLink>Like</ButtonLink>
+          : <ButtonLink onClick={likeEvent}>Like</ButtonLink>
         }
         <h3>Posts:</h3>
           <CommentBox postList={eventDetails.posts} eventdetailid={eventDetailID} />
